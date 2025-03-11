@@ -1,0 +1,129 @@
+﻿<Window x:Class="FractalView.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:utility="clr-namespace:FractalView.Utility"
+        xmlns:rendering="clr-namespace:FractalView.Rendering" 
+        xmlns:System="clr-namespace:System;assembly=mscorlib" 
+        Left="1200" Top="70"  
+        mc:Ignorable="d" Loaded="WindowLoaded" MinHeight="600" MinWidth="800" 
+        SizeChanged="WindowSizeChanged" Title="Fractal View" 
+        Height="600" Width="800" Margin="20" StateChanged="OnWindowStateChanged"
+        Background="{StaticResource BackgroundBrush}">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="{Binding ActualHeight, ElementName=WinBarGrid}" CornerRadius="0" GlassFrameThickness="1"/>
+    </WindowChrome.WindowChrome>
+
+    <Grid x:Name="MainGrid">
+        <Grid Background="{StaticResource BackgroundBrush}" >
+            <Rectangle VerticalAlignment="Center" Stretch="Fill" Height="100"
+                           Fill="{StaticResource ButtonBackBrush}"/>
+            <TextBlock Text="Rendering..." Foreground="{StaticResource ButtonForeBrush}"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"
+                           FontSize="24"/>
+        </Grid>
+        <Image Width="{Binding ActualWidth, ElementName=MainGrid}" Height="{Binding ActualHeight, ElementName=MainGrid}" 
+               x:Name="DirtyImage" Stretch="Fill" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+
+        <Grid Background="#66000000" Visibility="Collapsed" IsHitTestVisible="False">
+            <Rectangle VerticalAlignment="Center" Stretch="Fill" Height="100"
+                           Fill="{StaticResource ButtonBackBrush}"/>
+            <TextBlock Text="Max Scale" Foreground="{StaticResource ButtonForeBrush}"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"
+                           FontSize="24" Name="RenderMessage"/>
+        </Grid>
+        <Grid Height="40" VerticalAlignment="Top" x:Name="WinBarGrid" Opacity="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="8"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="8"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition Width="4"/>
+            </Grid.ColumnDefinitions>
+            <Button Margin="0 0 0 0" Grid.Row="1" WindowChrome.IsHitTestVisibleInChrome="True" 
+                    Grid.Column="1" Click="MinimizeClick" Height="22" Width="30" Padding="0">
+                <Line X1="0" X2="10" Y1="12" Y2="12" Stroke="{StaticResource ButtonForeBrush}"/>
+            </Button>
+            <Button x:Name="MaximizeButton" Margin="0 0 0 0" Grid.Row="1" WindowChrome.IsHitTestVisibleInChrome="True" 
+                    Grid.Column="2" Click="MaximizeClick" Height="22" Width="30" Padding="0">
+                <Grid Opacity=".8">
+                    <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Rectangle Height="11" Width="14" StrokeThickness="1.3"  Stroke="{StaticResource ButtonForeBrush}" RadiusX="1" RadiusY="1"/>
+                        <Line X1="0" X2="14" Y1="2.3" Y2="2.3" StrokeThickness="1.3" Stroke="{StaticResource ButtonForeBrush}"/>
+                    </Grid>
+                    <Grid Opacity="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Border Background="{StaticResource ButtonBackBrush}" Margin="-3,-1"/>
+                        <Rectangle Height="10" Width="12" StrokeThickness="1.3" Stroke="{StaticResource ButtonForeBrush}" Margin="0 -1 -2 0" RadiusX="1" RadiusY="1"/>
+                        <Rectangle Height="10" Width="12" StrokeThickness="1.3" Stroke="{StaticResource ButtonForeBrush}" Margin="-3 2 0 0" RadiusX="1" RadiusY="1" />
+                    </Grid>
+                </Grid>
+            </Button>
+            <Button Margin="0 0 0 0" Grid.Row="1" WindowChrome.IsHitTestVisibleInChrome="True" 
+                    Grid.Column="3" Click="CloseClick" Height="22" Width="30" Padding="0">
+                <Grid Opacity=".8">
+                    <Line X1="0" X2="10" Y1="0" Y2="10" StrokeThickness="1.5" Stroke="{StaticResource ButtonForeBrush}"/>
+                    <Line X1="0" X2="10" Y1="10" Y2="0" StrokeThickness="1.5" Stroke="{StaticResource ButtonForeBrush}"/>
+                </Grid>
+            </Button>
+        </Grid>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <StackPanel.RenderTransform>
+                <TranslateTransform x:Name="TranslateSetting" X="182"/>
+            </StackPanel.RenderTransform>
+            <Button HorizontalAlignment="Right" VerticalAlignment="Top" HorizontalContentAlignment="Center"
+                        Height="26" Width="18" Margin="10,50" Padding="0" Click="SettingButtonClick">
+                <TextBlock Text="⮜" Opacity="0.8" RenderTransformOrigin="0.6,0.58">
+                    <TextBlock.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="1.0" ScaleY="2.0"/>
+                            <TranslateTransform X="0"/>
+                        </TransformGroup>
+                    </TextBlock.RenderTransform>
+                </TextBlock>
+            </Button>
+            <Border x:Name="SettingPanel" Background="{StaticResource OptionPanelBrush}" VerticalAlignment="Top"
+                        CornerRadius="5,0,0,5" Width="180" HorizontalAlignment="Right" Margin="0,40,0,0">
+                <StackPanel Margin="10">
+                    <StackPanel Margin="0,10,0,5" d:DataContext="{d:DesignInstance Type=rendering:Render}">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock Text="Iterations:  " />
+                            <TextBlock Text="{Binding Iterations}"/>
+                        </StackPanel>
+                        <Slider Height="30" Width="130" IsSnapToTickEnabled="True" VerticalAlignment="Bottom" 
+                                Value="{Binding Iterations}" Minimum="20" Maximum="{Binding MaxIterations}"
+                                Thumb.DragCompleted="IterSliderMove" Keyboard.KeyUp="IterSliderKeyUp"/>
+                    </StackPanel>
+                    <StackPanel Margin="5,10">
+                        <StackPanel.Resources>
+                            <utility:FractalTypes x:Key="FTypes"/>
+                        </StackPanel.Resources>
+                        <TextBlock HorizontalAlignment="Center" Text="Fractal Type"/>
+                        <ComboBox Margin="2" SelectedIndex="0" DisplayMemberPath="FractalName" SelectionChanged="FractalTypeChanged"
+                                  ItemsSource="{Binding Mode=OneWay, Source={x:Static utility:FractalTypes.Items}}"
+                                  SelectedItem="{Binding Source={StaticResource FTypes}, Path=SelectedItem}"/>
+                    </StackPanel>
+                    <StackPanel Margin="5,5">
+                        <StackPanel.Resources>
+                            <utility:ColorMappings x:Key="ColorMaps"/>
+                        </StackPanel.Resources>
+                        <TextBlock HorizontalAlignment="Center" Text="Color Map"/>
+                        <ComboBox Margin="2" SelectedIndex="0"
+                                      ItemsSource="{Binding Mode=OneWay, Source={x:Static utility:ColorMappings.Items}}"
+                                      SelectedItem="{Binding Source={StaticResource ColorMaps}, Path=SelectedItem}"/>
+                    </StackPanel>
+                    <ToggleButton Margin="10,20,10,10" Width="90" Content="Julia Mode" Click="JuliaClick"/>
+                    <Button Margin="10" Width="90" Content="Reset" Click="ResetCoordClick"/>
+                    <Button Margin="10" Width="90" Content="Save Image" Click="SaveImgClick"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</Window>

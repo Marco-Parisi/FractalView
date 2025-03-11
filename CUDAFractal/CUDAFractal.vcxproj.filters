@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CudaCompile Include="FractalKernel.cu" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FractalKernel.cuh" />
+    <ClInclude Include="spline.h" />
+    <ClInclude Include="NotUsed.h" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,16 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <CornerRadius x:Key="CornerRad">0</CornerRadius>
+
+    <SolidColorBrush x:Key="BackgroundBrush" Color="Black"/>
+    <SolidColorBrush x:Key="ForegroundBrush" Color="White"/>
+    <SolidColorBrush x:Key="ButtonBackBrush" Color="#EFAAAAAA"/>
+    <SolidColorBrush x:Key="ButtonForeBrush" Color="Black"/>
+    <SolidColorBrush x:Key="ComboBoxNormalBorderBrush" Color="Black"/>
+    <SolidColorBrush x:Key="OptionPanelBrush" Color="#A0898989"/>
+    
+    <Color x:Key="AccentColor">#FF346FAF</Color>
+    <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
+    
+</ResourceDictionary>
